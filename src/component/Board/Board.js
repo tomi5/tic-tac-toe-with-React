@@ -1,5 +1,5 @@
 import React from "react";
-import Square from "./Square";
+import Square from "../Squere/Square";
 
 const style = {
   width: "400px",
