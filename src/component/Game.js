@@ -10,29 +10,44 @@ const style = {
 };
 
 const Game = () => {
-  const [board, setBoard] = useState(Array(9).fill(null)); // start with empty board
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [stepNumber, setStepNumber] = useState(0);
+
   const [xIsNext, setXisNext] = useState(true);
-  const winner = calculateWinner(board);
+  const winner = calculateWinner(history[stepNumber]);
 
   const handleClick = (i) => {
-    const boardCopy = [...board]; // we cannot mutete board directly so that is why copy is created
+    const timeInHistory = history.slice(0, stepNumber + 1);
+    const currrent = timeInHistory[stepNumber];
+    const squeres = [...currrent];
+
     // if user clicked an occupied field or if game is won, return,
-    if (winner || boardCopy[i]) return;
+    if (winner || squeres[i]) return;
     // Put X or O in the clicked field
-    boardCopy[i] = xIsNext ? "X" : "O";
-    setBoard(boardCopy);
+    squeres[i] = xIsNext ? "X" : "O";
+    setHistory([...timeInHistory, squeres]);
+    setStepNumber(timeInHistory.length);
     setXisNext(!xIsNext);
   };
 
-  const jumpTo = () => {};
+  const jumpTo = (step) => {
+    setStepNumber(step);
+    setXisNext(step % 2 === 0);
+  };
 
-  const renderMoves = () => (
-    <button onClick={() => setBoard(Array(9).fill(null))}>Start Game</button>
-  );
+  const renderMoves = () =>
+    history.map((_step, move) => {
+      const destination = move ? `Go to move#${move}` : `Go to start`;
+      return (
+        <li key={move}>
+          <button onClick={() => jumpTo(move)}>{destination}</button>
+        </li>
+      );
+    });
 
   return (
     <>
-      <Board squares={board} onClick={handleClick} />
+      <Board squares={history[stepNumber]} onClick={handleClick} />
       <div style={style}>
         <p>
           {winner ? `Winner: ${winner}` : `Next Player: ${xIsNext ? `X` : `O`}`}
