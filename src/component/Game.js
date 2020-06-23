@@ -8,7 +8,15 @@ const Game = () => {
   const [xIsNext, setXisNext] = useState(true);
   const winner = calculateWinner(board);
 
-  const handleClick = () => {};
+  const handleClick = (i) => {
+    const boardCopy = [...board]; // we cannot mutete board directly so that is why copy is created
+    // if user clicked an occupied field or if game is won, return,
+    if (winner || boardCopy[i]) return;
+    // Put X or O in the clicked field
+    boardCopy[i] = xIsNext ? "X" : "O";
+    setBoard(boardCopy);
+    setXisNext(!xIsNext);
+  };
 
   const jumpTo = () => {};
 
